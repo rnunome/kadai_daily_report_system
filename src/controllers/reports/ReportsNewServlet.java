@@ -30,13 +30,17 @@ public class ReportsNewServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
+    //新しいリソースの入力画面（フォーム）
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //リクエストスコープで正しく画面遷移がなされているかを証明するためのデータをJSPに送る
         request.setAttribute("_token", request.getSession().getId());
-
+        //インスタンス化
         Report r = new Report();
+        //新規日報の作成日時を設定？
         r.setReport_date(new Date(System.currentTimeMillis()));
+        //JSPにリクエストスコープで日報情報のデータを送る
         request.setAttribute("report", r);
-
+        //サーブレットからJSPを呼び出すおまじない
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/reports/new.jsp");
         rd.forward(request, response);
     }

@@ -31,20 +31,25 @@ public class EmployeesDestroyServlet extends HttpServlet {
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
+    //
+    //削除処理（DELETE）
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //正しく画面が遷移されるか確認
         String _token = (String)request.getParameter("_token");
         if(_token != null && _token.equals(request.getSession().getId())) {
             EntityManager em = DBUtil.createEntityManager();
-
+          //セッションスコープから従業員IDを取得して
+            //該当のIDの従業員1件のみをDBから取得
+            //削除と更新時間の処理
             Employee e = em.find(Employee.class, (Integer)(request.getSession().getAttribute("employee_id")));
             e.setDelete_flag(1);
             e.setUpdated_at(new Timestamp(System.currentTimeMillis()));
-
+            //DBの更新
             em.getTransaction().begin();
             em.getTransaction().commit();
             em.close();
             request.getSession().setAttribute("flush", "削除が完了しました。");
-
+            //indexページにリダイレクト
             response.sendRedirect(request.getContextPath() + "/employees/index");
     }
     }

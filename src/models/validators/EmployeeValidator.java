@@ -9,7 +9,7 @@ import models.Employee;
 import utils.DBUtil;
 
 public class EmployeeValidator {
-
+//社員番号・名前・パスワードが画面に入力されているか確認
     public static List<String> validate(Employee e, Boolean code_duplicate_check_flag, Boolean password_check_flag) {
         List<String> errors = new ArrayList<String>();
 

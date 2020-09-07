@@ -35,11 +35,14 @@ public class EmployeesUpdateServlet extends HttpServlet {
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
+    //変更処理（Update）
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //正しく画面が遷移されるか確認
         String _token = (String)request.getParameter("_token");
         if(_token != null && _token.equals(request.getSession().getId())) {
             EntityManager em = DBUtil.createEntityManager();
-
+            //セッションスコープから従業員IDを取得して
+            //該当のIDの従業員1件のみをDBから取得
             Employee e = em.find(Employee.class, (Integer)(request.getSession().getAttribute("employee_id")));
 
             // 現在の値と異なる社員番号が入力されていたら
@@ -65,30 +68,31 @@ public class EmployeesUpdateServlet extends HttpServlet {
                                 )
                         );
             }
-
+            //従業員情報を更新？
             e.setName(request.getParameter("name"));
             e.setAdmin_flag(Integer.parseInt(request.getParameter("admin_flag")));
             e.setUpdated_at(new Timestamp(System.currentTimeMillis()));
             e.setDelete_flag(0);
-
+            //社員番号・社員名・パスワードの入力を確認
             List<String> errors = EmployeeValidator.validate(e, code_duplicate_check, password_check_flag);
             if(errors.size() > 0) {
                 em.close();
-
+                //リクエストスコープに従業員情報とエラー情報を登録？
                 request.setAttribute("_token", request.getSession().getId());
                 request.setAttribute("employee", e);
                 request.setAttribute("errors", errors);
-
+                //サーブレットからJSPを呼び出す
                 RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/edit.jsp");
                 rd.forward(request, response);
             } else {
+                //データベースを更新
                 em.getTransaction().begin();
                 em.getTransaction().commit();
                 em.close();
                 request.getSession().setAttribute("flush", "更新が完了しました。");
-
+                //セッションスコープ上の不要になったデータを削除
                 request.getSession().removeAttribute("employee_id");
-
+                //indexページへリダイレクト
                 response.sendRedirect(request.getContextPath() + "/employees/index");
             }
         }

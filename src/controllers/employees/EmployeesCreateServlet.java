@@ -35,45 +35,50 @@ public class EmployeesCreateServlet extends HttpServlet {
     /**
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
      */
+    //新規登録処理（INSERT）
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //正しく画面が遷移するか確認
         String _token = (String)request.getParameter("_token");
         if(_token != null && _token.equals(request.getSession().getId())) {
+            //DBとの接続
             EntityManager em = DBUtil.createEntityManager();
-
+            //インスタンス化
             Employee e = new Employee();
-
+            //ブラウザからリクエストされた際に送られてくる社員番号・名前・パスワード情報
             e.setCode(request.getParameter("code"));
             e.setName(request.getParameter("name"));
             e.setPassword(
-                    EncryptUtil.getPasswordEncrypt(
+                    EncryptUtil.getPasswordEncrypt(//パスワード解読？
                             request.getParameter("password"),
-                            (String)this.getServletContext().getAttribute("pepper")
+                            (String)this.getServletContext().getAttribute("pepper")//pepper文字列とは？
                             )
                     );
-            e.setAdmin_flag(Integer.parseInt(request.getParameter("admin_flag")));
-
+            e.setAdmin_flag(Integer.parseInt(request.getParameter("admin_flag")));//権限があるか
+            //作成・更新時間の登録？
             Timestamp currentTime = new Timestamp(System.currentTimeMillis());
             e.setCreated_at(currentTime);
             e.setUpdated_at(currentTime);
             e.setDelete_flag(0);
 
+            //パスワードの入力値チェックと社員番号の重複チェック
             List<String> errors = EmployeeValidator.validate(e, true, true);
             if(errors.size() > 0) {
                 em.close();
-
+                //viewに遷移・従業員・エラーデータを送るための命令
                 request.setAttribute("_token", request.getSession().getId());
                 request.setAttribute("employee", e);
                 request.setAttribute("errors", errors);
-
+                //ServletからJSPを呼び出すための命令
                 RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/new.jsp");
                 rd.forward(request, response);
-            } else {
+            } else {//??
                 em.getTransaction().begin();
                 em.persist(e);
                 em.getTransaction().commit();
                 em.close();
+                //フラッシュメッセージを表示
                 request.getSession().setAttribute("flush", "登録が完了しました。");
-
+                //employees/index画面に戻る
                 response.sendRedirect(request.getContextPath() + "/employees/index");
             }
         }

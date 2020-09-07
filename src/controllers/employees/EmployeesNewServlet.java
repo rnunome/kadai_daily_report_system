@@ -28,10 +28,12 @@ public class EmployeesNewServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
+    //新しいリソースの入力画面（フォーム）
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //viewに新しく入力するemployeeデータと処理が正しく画面遷移ができるか証明するデータを送るための命令
         request.setAttribute("_token", request.getSession().getId());
         request.setAttribute("employee", new Employee());
-
+        //サーブレットからJSPを呼び出すためのおまじない
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/employees/new.jsp");
         rd.forward(request, response);
     }

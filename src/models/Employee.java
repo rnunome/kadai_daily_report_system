@@ -11,21 +11,22 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+//employeesというデータの入った表からデータを取得する
 @Table(name = "employees")
 @NamedQueries({
-    @NamedQuery(
+    @NamedQuery(//すべての従業員の情報を取得するためにgetAllEmployeesという名前をつける
         name = "getAllEmployees",
         query = "SELECT e FROM Employee AS e ORDER BY e.id DESC"
         ),
-    @NamedQuery(
+    @NamedQuery(//従業員情報の全件数を取得するためにgetEmployeesCountという名前をつける
             name = "getEmployeesCount",
             query = "SELECT COUNT(e) FROM Employee AS e"
             ),
-    @NamedQuery(
+    @NamedQuery(//指定された社員番号がすでにデータベースに存在しているか調べるためにcheckRegisterCodeという名前をつける
             name = "checkRegisteredCode",
             query = "SELECT COUNT(e) FROM Employee AS e WHERE e.code = :code"
             ),
-    @NamedQuery(
+    @NamedQuery(//従業員がログインする際のパスワードが正しいか調べるためにcheckLoginCodeAndPasswordという名前をつける
             name = "checkLoginCodeAndPassword",
             query = "SELECT e FROM Employee AS e WHERE e.delete_flag = 0 AND e.code = :code AND e.password = :pass"
             )
@@ -33,31 +34,31 @@ import javax.persistence.Table;
 @Entity
 public class Employee {
     @Id
-    @Column(name = "id")
+    @Column(name = "id")//テーブルから自動に振られるidを作成
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "code", nullable = false, unique = true)
+    @Column(name = "code", nullable = false, unique = true)//社員番号
     private String code;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false)//テーブルから取得従業員名を入力
     private String name;
 
-    @Column(name = "password", length = 64, nullable = false)
+    @Column(name = "password", length = 64, nullable = false)//テーブルからパスワードを入力
     private String password;
 
-    @Column(name = "admin_flag", nullable = false)
+    @Column(name = "admin_flag", nullable = false)//管理者かどうかを入力
     private Integer admin_flag;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at", nullable = false)//作成日時を入力
     private Timestamp created_at;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", nullable = false)//更新時間を入力
     private Timestamp updated_at;
 
-    @Column(name = "delete_flag", nullable = false)
+    @Column(name = "delete_flag", nullable = false)//削除された人かを入力
     private Integer delete_flag;
-
+//Privateの値を変えられるように値をセット・取得する操作（セッターとゲッター）
     public Integer getId() {
         return id;
     }

@@ -1,13 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:import url="../layout/app.jsp">
+   <%--${param.content}の内容を以下記載 --%>
     <c:param name="content">
+        <%--フラッシュメッセージの表示 --%>
         <c:if test="${flush != null}">
             <div id="flush_success">
                 <c:out value="${flush}"></c:out>
             </div>
         </c:if>
         <h2>従業員　一覧</h2>
+        <%--従業員一覧のテーブルを表示 --%>
         <table id="employee_list">
             <tbody>
                 <tr>
@@ -15,16 +18,19 @@
                     <th>氏名</th>
                     <th>操作</th>
                 </tr>
+                <%--ステータスは二通り？--%>
                 <c:forEach var="employee" items="${employees}" varStatus="status">
                     <tr class="row${status.count % 2}">
                         <td><c:out value="${employee.code}" /></td>
                         <td><c:out value="${employee.name}" /></td>
                         <td>
                             <c:choose>
+                            <%--削除された人のときは削除済みと表示--%>
                                 <c:when test="${employee.delete_flag == 1}">
                                     （削除済み）
                                 </c:when>
                                 <c:otherwise>
+                                <%--それ以外は詳細を表示--%>
                                     <a href="<c:url value='/employees/show?id=${employee.id}' />">詳細を表示</a>
                                 </c:otherwise>
                             </c:choose>
@@ -36,6 +42,7 @@
 
         <div id="pagination">
             （全 ${employees_count} 件）<br />
+            <%--1ページ目から始まり最終ページに行くまでページを増やす？--%>
             <c:forEach var="i" begin="1" end="${((employees_count - 1) / 15) + 1}" step="1">
                 <c:choose>
                     <c:when test="${i == page}">

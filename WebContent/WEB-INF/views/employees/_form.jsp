@@ -1,4 +1,6 @@
+<%--スクリプト式からJSTLへ変換される--%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%--JSPの設定を記載 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${errors != null}">
     <div id="flush_error">

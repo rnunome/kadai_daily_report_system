@@ -22,6 +22,14 @@
 <input type="text" name="title" value="${report.title}" />
 <br /><br />
 
+<label for="started_work_at">出勤時間</label><br />
+<input type="text" name="started_work_at" value="${report.started_work_at}" />
+<br /><br />
+
+<label for="finished_work_at">退勤時間</label><br />
+<input type="text" name="finished_work_at" value="${report.finished_work_at}" />
+<br /><br />
+
 <label for="content">内容</label><br />
 <textarea name="content" rows="10" cols="50">${report.content}</textarea>
 <br /><br />

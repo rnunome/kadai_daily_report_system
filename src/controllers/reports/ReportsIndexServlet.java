@@ -17,6 +17,7 @@ import utils.DBUtil;
 /**
  * Servlet implementation class ReportsIndexServlet
  */
+//自動生成のクラス
 @WebServlet("/reports/index")
 public class ReportsIndexServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -24,6 +25,7 @@ public class ReportsIndexServlet extends HttpServlet {
     /**
      * @see HttpServlet#HttpServlet()
      */
+  //自動生成のコンストラクタ
     public ReportsIndexServlet() {
         super();
         // TODO Auto-generated constructor stub
@@ -32,25 +34,27 @@ public class ReportsIndexServlet extends HttpServlet {
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
+  //登録済みのリソースをJSP画面に表示するためのメソッド
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+      //データベースに接続
         EntityManager em = DBUtil.createEntityManager();
 
         int page;
-        try{
-            page = Integer.parseInt(request.getParameter("page"));
+        try{//エラーが起きたときにキャッチ
+            page = Integer.parseInt(request.getParameter("page"));//Integer.parseIntは引数にある文字列を数値に変える、getParameterは文字列を返す
         } catch(Exception e) {
-            page = 1;
+            page = 1;//エラーが起きたらここに飛ぶ
         }
         List<Report> reports = em.createNamedQuery("getAllReports", Report.class)
-                                  .setFirstResult(15 * (page - 1))
+                                  .setFirstResult(15 * (page - 1))//日報件数最初の14件表示
                                   .setMaxResults(15)
                                   .getResultList();
-
+      //日報数を数える？
         long reports_count = (long)em.createNamedQuery("getReportsCount", Long.class)
                                      .getSingleResult();
-
+      //DBとの接続を閉じる
         em.close();
-
+        //viewに日報・日報数・ページ数？のデータを送るための命令
         request.setAttribute("reports", reports);
         request.setAttribute("reports_count", reports_count);
         request.setAttribute("page", page);
@@ -58,7 +62,7 @@ public class ReportsIndexServlet extends HttpServlet {
             request.setAttribute("flush", request.getSession().getAttribute("flush"));
             request.getSession().removeAttribute("flush");
         }
-
+        //サーブレットからJSPを呼び出すためのおまじないの2行
         RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/reports/index.jsp");
         rd.forward(request, response);
     }
